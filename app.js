@@ -52,7 +52,7 @@ app.use(
 app.get("/", (req, res) => {
   if (req.session.authenticated) {
     res.send(`
-            <h1>Hello, ${req.session.name}!</h1>
+            <h1>Hello, ${req.session.name}! Welcome</h1>
             <a href="/members"><button>Go to Members Area</button></a><br><br>
             <a href="/logout"><button>Logout</button></a>
         `);
@@ -149,9 +149,7 @@ app.post("/submitLogin", async (req, res) => {
 
   // If validation fails, redirect back to the login page with an error message
   if (validationResult.error != null) {
-    return res.send(
-      `Invalid email/password combination. <a href="/login">Try again</a>`,
-    );
+    return res.send(`Invalid email format. <a href="/login">Try again</a>`);
   }
 
   // Query the database for a user with the provided email
@@ -159,9 +157,7 @@ app.post("/submitLogin", async (req, res) => {
 
   // If no user is found or multiple users are found, redirect back to the login page with an error message
   if (result.length != 1) {
-    return res.send(
-      `Invalid email/password combination. <a href="/login">Try again</a>`,
-    );
+    return res.send(`Invalid email. <a href="/login">Try again</a>`);
   }
 
   // Compare the provided password with the hashed password stored in the database
@@ -170,9 +166,7 @@ app.post("/submitLogin", async (req, res) => {
     req.session.name = result[0].name;
     res.redirect("/members");
   } else {
-    return res.send(
-      `Invalid email/password combination. <a href="/login">Try again</a>`,
-    );
+    return res.send(`Invalid password. <a href="/login">Try again</a>`);
   }
 });
 
@@ -187,6 +181,7 @@ app.get("/members", (req, res) => {
   res.send(`
         <h1>Welcome to the Members Area, ${req.session.name}!</h1>
         <img src="/${randomImageId}.gif" style="width:250px;"><br><br>
+        <a href="/"><button>Home</button></a><br><br>
         <a href="/logout"><button>Logout</button></a>
     `);
 });
